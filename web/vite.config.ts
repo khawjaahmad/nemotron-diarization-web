@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, extname, join, normalize } from "node:path";
 import react from "@vitejs/plugin-react";
@@ -10,6 +10,13 @@ const MODEL_ROUTE = "/models";
 
 const ORT_DIST = dirname(createRequire(import.meta.url).resolve("onnxruntime-web"));
 const ORT_ROUTE = "/ort";
+
+/**
+ * The only runtime flavour this app ever loads. The bundled entry point already carries the WebGPU
+ * backend, so both execution providers resolve to the JSEP artefact; shipping the other flavours
+ * would add roughly 70 MB of WebAssembly that is never fetched.
+ */
+const ORT_RUNTIME_FILES = ["ort-wasm-simd-threaded.jsep.mjs", "ort-wasm-simd-threaded.jsep.wasm"];
 
 const CONTENT_TYPES: Record<string, string> = {
   ".json": "application/json",
@@ -52,8 +59,8 @@ function serveCheckpoint(): Plugin {
 
 /**
  * ONNX Runtime builds its WebAssembly file paths at runtime, so no bundler can follow those
- * imports. Publishing its whole `dist` under a fixed route gives `env.wasm.wasmPaths` a prefix to
- * use, and avoids having to predict which of the runtime flavours it decides to pull in.
+ * imports. Serving its `dist` under a fixed route gives `env.wasm.wasmPaths` a prefix to use; the
+ * whole directory is available during `dev`, while a build emits only `ORT_RUNTIME_FILES`.
  *
  * Rollup still emits its own copy of the `.wasm`, from a static `new URL` that is never actually
  * taken once `wasmPaths` is set; that dead 28 MB is dropped from the bundle here.
@@ -80,7 +87,7 @@ function serveOrtRuntime(): Plugin {
           delete bundle[key];
         }
       }
-      for (const name of readdirSync(ORT_DIST).filter((f) => /\.(mjs|wasm)$/.test(f))) {
+      for (const name of ORT_RUNTIME_FILES) {
         const source = readFileSync(join(ORT_DIST, name));
         this.emitFile({ type: "asset", fileName: `${ORT_ROUTE.slice(1)}/${name}`, source });
       }
