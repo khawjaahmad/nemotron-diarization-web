@@ -46,8 +46,3 @@ export function topKIndices(values: Float32Array, count: number): Int32Array {
   order.sort((a, b) => values[b] - values[a] || a - b);
   return order.slice(0, count);
 }
-
-export function sigmoidInPlace(values: Float32Array): Float32Array {
-  for (let i = 0; i < values.length; i++) values[i] = 1 / (1 + Math.exp(-values[i]));
-  return values;
-}

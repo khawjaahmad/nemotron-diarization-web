@@ -46,9 +46,3 @@ export function speakingTimes(segments: Segment[], numSpeakers: number): Float64
   for (const segment of segments) totals[segment.speaker] += segment.end - segment.start;
   return totals;
 }
-
-/** Speakers that have spoken at least once, in order of first arrival. */
-export function activeSpeakers(segments: Segment[], numSpeakers: number): number[] {
-  const seen = new Set(segments.map((segment) => segment.speaker));
-  return Array.from({ length: numSpeakers }, (_, speaker) => speaker).filter((speaker) => seen.has(speaker));
-}
