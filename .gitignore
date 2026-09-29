@@ -15,6 +15,8 @@ Nemotron-3-Diarization-ONNX/
 .env
 .env.*
 !.env.example
+# Not secret: the public CDN URL production builds load weights from
+!web/.env.production
 
 # Python
 __pycache__/
