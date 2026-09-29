@@ -3,6 +3,8 @@
 Streaming speaker diarization that runs entirely in the browser. No server, no API key, no audio
 leaving the device.
 
+**Live demo:** [huggingface.co/spaces/ahmadw/nemotron-diarization-web](https://huggingface.co/spaces/ahmadw/nemotron-diarization-web)
+
 This is a TypeScript port of the inference pipeline around
 [NVIDIA Nemotron 3 Diarization](https://huggingface.co/nvidia/Nemotron-3-Diarization), using the
 ONNX export from
@@ -20,6 +22,7 @@ TypeScript, and verified frame-for-frame against a Python reference implementati
 - Input buffer latency from **320 ms**, plus a 30.4 s offline mode
 - Live microphone or audio file input
 - Runs off the main thread in a Web Worker
+- Responsive dark UI, from phones to wide desktops
 
 ## Backend support
 
@@ -77,6 +80,27 @@ Then open http://localhost:5173.
 weights are never copied into the bundle. To load them from Hugging Face instead, set
 `VITE_MODEL_BASE_URL` (see [`.env.example`](.env.example)).
 
+## Building and deploying
+
+```bash
+cd web
+npm run build      # type-checks, then writes a static site to web/dist
+npm run preview    # serves the build locally
+```
+
+Production builds read [`web/.env.production`](web/.env.production), which points
+`VITE_MODEL_BASE_URL` at the Hugging Face CDN, so `dist/` contains only the app and the ONNX Runtime
+WebAssembly (about 29 MB). Browsers download the weights on first use and cache them.
+
+`dist/` is a plain static site and runs on any static host. The live demo is a static Hugging Face
+Space:
+
+```bash
+hf upload <user>/<space> web/dist . --repo-type space --delete "assets/*"
+```
+
+`--delete "assets/*"` removes the previous build's hashed bundles.
+
 ## How it works
 
 Audio is captured at 16 kHz by an `AudioWorklet`, forwarded in 128 ms blocks to a worker, and
@@ -85,6 +109,9 @@ log-mel spectrogram, concatenated with the speaker cache, and pushed through the
 
 ```
 web/src/
+├── App.tsx                   Layout and wiring between hooks and components
+├── components/               Top bar, speaker tiles, activity timeline, turn list, control bar
+├── styles/theme.css          Colour, radius, shadow and font tokens
 ├── worker/
 │   ├── diarizer.worker.ts    Owns the ONNX session; serialises inference
 │   └── protocol.ts           Typed messages between page and worker
@@ -95,6 +122,7 @@ web/src/
 │   ├── speakerCache.ts       Arrival-Order Speaker Cache and FIFO queue
 │   ├── segments.ts           Probabilities to speaker turns
 │   ├── timeline.ts           Growing probability buffer for the UI
+│   ├── speakerStyle.ts       Speaker colours and labels
 │   └── audio.ts              Microphone capture and file decoding
 └── hooks/
     ├── useDiarizer.ts        Worker lifecycle, session tagging
