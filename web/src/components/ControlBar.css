@@ -1,0 +1,110 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--lk-bg2);
+  border: 1px solid var(--lk-border);
+  border-radius: var(--lk-radius-pill);
+  box-shadow: 0 16px 40px -24px rgba(0, 0, 0, 0.9);
+}
+
+.controls__mic,
+.controls__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--lk-radius-pill);
+  white-space: nowrap;
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.controls__mic {
+  color: var(--lk-fg);
+  background: var(--lk-accent);
+}
+
+.controls__mic:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--lk-accent) 85%, white);
+}
+
+.controls__mic[data-recording="true"] {
+  background: var(--lk-danger);
+}
+
+.controls__mic[data-recording="true"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--lk-danger) 85%, white);
+}
+
+.controls__action {
+  color: var(--lk-fg2);
+  background: var(--lk-bg3);
+}
+
+.controls__action:hover:not(:disabled) {
+  color: var(--lk-fg);
+  background: var(--lk-bg4);
+}
+
+.controls__divider {
+  width: 1px;
+  height: 22px;
+  background: var(--lk-border);
+}
+
+.controls__threshold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--lk-fg3);
+}
+
+.controls__threshold output {
+  font-family: var(--lk-font-mono);
+  color: var(--lk-fg2);
+  min-width: 30px;
+}
+
+.controls__threshold input[type="range"] {
+  width: 96px;
+  height: 3px;
+  appearance: none;
+  background: var(--lk-bg4);
+  border-radius: var(--lk-radius-pill);
+  cursor: pointer;
+}
+
+.controls__threshold input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  background: var(--lk-fg);
+  border-radius: 50%;
+}
+
+.controls__threshold input[type="range"]::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: none;
+  background: var(--lk-fg);
+  border-radius: 50%;
+}
+
+@media (max-width: 900px) {
+  .controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: var(--lk-radius-lg);
+  }
+
+  .controls__divider {
+    display: none;
+  }
+}

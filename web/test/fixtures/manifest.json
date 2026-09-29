@@ -1,0 +1,61 @@
+{
+  "sampling_rate": 16000,
+  "num_audio_samples": 480000,
+  "num_mel_bins": 128,
+  "num_speakers": 8,
+  "streaming_mode": "low_latency",
+  "chunk_length": 9,
+  "chunk_right_context": 4,
+  "num_samples_first_audio_chunk": 16680,
+  "num_samples_per_audio_chunk": 17040,
+  "mel_centered_frames": 104,
+  "mel_uncentered_frames": 104,
+  "num_probability_frames": 2999,
+  "segments": [
+    {
+      "start": 0.36,
+      "end": 9.31,
+      "speaker": 0
+    },
+    {
+      "start": 9.17,
+      "end": 13.83,
+      "speaker": 1
+    },
+    {
+      "start": 13.55,
+      "end": 18.32,
+      "speaker": 2
+    },
+    {
+      "start": 18.38,
+      "end": 20.06,
+      "speaker": 3
+    },
+    {
+      "start": 20.16,
+      "end": 23.6,
+      "speaker": 3
+    },
+    {
+      "start": 23.79,
+      "end": 24.48,
+      "speaker": 4
+    },
+    {
+      "start": 25.2,
+      "end": 28.11,
+      "speaker": 4
+    },
+    {
+      "start": 27.8,
+      "end": 28.8,
+      "speaker": 0
+    },
+    {
+      "start": 28.8,
+      "end": 29.99,
+      "speaker": 5
+    }
+  ]
+}

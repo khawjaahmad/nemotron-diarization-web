@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Model weights (~835 MB) — fetched from Hugging Face, see README
+Nemotron-3-Diarization-ONNX/
+
+# Reference audio used by tools/ — not redistributable, see README
+.scratch/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
