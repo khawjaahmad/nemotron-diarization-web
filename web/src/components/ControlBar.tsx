@@ -16,7 +16,7 @@ export interface ControlBarProps {
   onThresholdChange: (threshold: number) => void;
 }
 
-/** Floating control pill: microphone, file input, threshold and session reset. */
+/** Docked control bar: microphone, file input, threshold and session reset. */
 export function ControlBar({
   isReady,
   isRecording,
@@ -31,22 +31,32 @@ export function ControlBar({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isBusy = !isReady || isProcessingFile;
 
+  const caption = isRecording
+    ? "Listening"
+    : isProcessingFile
+      ? "Analysing file"
+      : isReady
+        ? "Ready to listen"
+        : "Loading model";
+
   return (
     <div className="controls">
-      <button
-        type="button"
-        className="controls__mic"
-        data-recording={isRecording}
-        disabled={isBusy}
-        onClick={onToggleMicrophone}
-      >
-        {isRecording ? <MicOffIcon /> : <MicIcon />}
-        <span>{isRecording ? "Stop" : "Start"} listening</span>
-      </button>
-
-      <WaveformMeter analyser={analyser} />
-
-      <span className="controls__divider" />
+      <div className="controls__now">
+        <button
+          type="button"
+          className="controls__mic"
+          data-recording={isRecording}
+          disabled={isBusy}
+          onClick={onToggleMicrophone}
+          aria-label={isRecording ? "Stop listening" : "Start listening"}
+        >
+          {isRecording ? <MicOffIcon size={20} /> : <MicIcon size={20} />}
+        </button>
+        <div className="controls__caption">
+          <strong>{caption}</strong>
+          {isRecording ? <WaveformMeter analyser={analyser} /> : <span>Microphone or audio file</span>}
+        </div>
+      </div>
 
       <label className="controls__threshold">
         <span>Threshold</span>
@@ -61,22 +71,27 @@ export function ControlBar({
         <output>{threshold.toFixed(2)}</output>
       </label>
 
-      <span className="controls__divider" />
+      <div className="controls__actions">
+        <button
+          type="button"
+          className="controls__action"
+          disabled={isBusy || isRecording}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <UploadIcon />
+          <span className="controls__action-label">{isProcessingFile ? "Analysing…" : "Audio file"}</span>
+        </button>
 
-      <button
-        type="button"
-        className="controls__action"
-        disabled={isBusy || isRecording}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <UploadIcon />
-        <span>{isProcessingFile ? "Analysing…" : "Audio file"}</span>
-      </button>
-
-      <button type="button" className="controls__action" disabled={!isReady || isRecording} onClick={onReset}>
-        <ResetIcon />
-        <span>Reset</span>
-      </button>
+        <button
+          type="button"
+          className="controls__action"
+          disabled={!isReady || isRecording}
+          onClick={onReset}
+        >
+          <ResetIcon />
+          <span className="controls__action-label">Reset</span>
+        </button>
+      </div>
 
       <input
         ref={fileInputRef}

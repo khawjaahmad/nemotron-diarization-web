@@ -3,6 +3,9 @@ import { useEffect, useRef } from "react";
 import "./WaveformMeter.css";
 
 const BAR_COUNT = 28;
+/** Canvas cannot read CSS variables cheaply; these mirror `--accent` and a muted surface in theme.css. */
+const BAR_ACTIVE_COLOR = "#1ed760";
+const BAR_IDLE_COLOR = "#4d4d4d";
 
 export interface WaveformMeterProps {
   analyser: AnalyserNode | null;
@@ -61,7 +64,7 @@ function drawBars(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, 
   for (let bar = 0; bar < BAR_COUNT; bar++) {
     const level = Math.min(1, levels[bar] * 6);
     const barHeight = Math.max(2, level * height);
-    context.fillStyle = level > 0.02 ? "rgba(31, 140, 249, 0.9)" : "rgba(255, 255, 255, 0.14)";
+    context.fillStyle = level > 0.02 ? BAR_ACTIVE_COLOR : BAR_IDLE_COLOR;
     context.beginPath();
     context.roundRect(bar * step + 1, (height - barHeight) / 2, step - 2, barHeight, 1.5);
     context.fill();

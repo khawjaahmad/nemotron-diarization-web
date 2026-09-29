@@ -1,12 +1,16 @@
 import { useEffect, useRef } from "react";
 
 import { formatTimestamp } from "../lib/audio";
-import { speakerColor, speakerColorAlpha, speakerLabel } from "../lib/speakerStyle";
+import { speakerColor, speakerColorAlpha } from "../lib/speakerStyle";
 import type { ProbabilityTimeline } from "../lib/timeline";
 import "./ActivityTimeline.css";
 
+/** Must match the row gap of `.timeline__labels` so lane names line up with their lanes. */
 const LANE_GAP = 6;
-const GUTTER = 84;
+/** Mirror `--surface-2` and `--text-faint` in theme.css. */
+const LANE_BACKGROUND = "#1f1f1f";
+const AXIS_TEXT_COLOR = "#7c7c7c";
+const AXIS_FONT = "11px ui-monospace, Menlo, monospace";
 
 export interface ActivityTimelineProps {
   timeline: ProbabilityTimeline | null;
@@ -41,10 +45,11 @@ export function ActivityTimeline({ timeline, revision, threshold, windowSeconds,
   const numSpeakers = timeline?.numSpeakers ?? 8;
   return (
     <div className="timeline">
-      <div className="timeline__labels" style={{ gridTemplateRows: `repeat(${numSpeakers}, 1fr)` }}>
+      <div className="timeline__labels" style={{ gridTemplateRows: `repeat(${numSpeakers}, minmax(0, 1fr))` }}>
         {Array.from({ length: numSpeakers }, (_, speaker) => (
           <span key={speaker} className="timeline__label" style={{ color: speakerColor(speaker) }}>
-            {speakerLabel(speaker)}
+            <span className="timeline__label-word">Speaker </span>
+            {speaker + 1}
           </span>
         ))}
       </div>
@@ -70,14 +75,19 @@ function draw(
   const height = canvas.clientHeight;
   if (width === 0 || height === 0) return;
 
+  // Layout is owned by CSS so the gutter can shrink with the lane labels on narrow screens.
+  const style = getComputedStyle(canvas);
+  const gutter = Number.parseFloat(style.getPropertyValue("--timeline-gutter")) || 0;
+  const lanesHeight = height - (Number.parseFloat(style.getPropertyValue("--timeline-axis")) || 0);
+
   canvas.width = Math.round(width * ratio);
   canvas.height = Math.round(height * ratio);
   context.setTransform(ratio, 0, 0, ratio, 0, 0);
   context.clearRect(0, 0, width, height);
 
   const { numSpeakers, numFrames, frameDurationSeconds } = timeline;
-  const laneHeight = (height - LANE_GAP * (numSpeakers - 1)) / numSpeakers;
-  const plotWidth = width - GUTTER;
+  const laneHeight = (lanesHeight - LANE_GAP * (numSpeakers - 1)) / numSpeakers;
+  const plotWidth = width - gutter;
 
   const windowFrames = Math.round(windowSeconds / frameDurationSeconds);
   const firstFrame = follow ? Math.max(0, numFrames - windowFrames) : 0;
@@ -85,12 +95,13 @@ function draw(
 
   for (let speaker = 0; speaker < numSpeakers; speaker++) {
     const top = speaker * (laneHeight + LANE_GAP);
-    context.fillStyle = "rgba(255, 255, 255, 0.03)";
-    roundedRect(context, 0, top, width, laneHeight, 4);
+    context.fillStyle = LANE_BACKGROUND;
+    context.beginPath();
+    context.roundRect(gutter, top, plotWidth, laneHeight, 4);
     context.fill();
   }
 
-  if (numFrames === 0) return drawAxis(context, width, height, firstFrame, visibleFrames, frameDurationSeconds);
+  if (numFrames === 0) return drawAxis(context, gutter, width, height, firstFrame, visibleFrames, frameDurationSeconds);
 
   const probabilities = timeline.view();
   const framesPerColumn = visibleFrames / plotWidth;
@@ -109,44 +120,33 @@ function draw(
       const top = speaker * (laneHeight + LANE_GAP);
       const barHeight = Math.max(2, laneHeight * Math.min(1, peak));
       context.fillStyle = speakerColorAlpha(speaker, peak >= threshold ? 0.95 : 0.25);
-      context.fillRect(column, top + (laneHeight - barHeight) / 2, 1.2, barHeight);
+      context.fillRect(gutter + column, top + (laneHeight - barHeight) / 2, 1.2, barHeight);
     }
   }
 
-  drawAxis(context, width, height, firstFrame, visibleFrames, frameDurationSeconds);
+  drawAxis(context, gutter, width, height, firstFrame, visibleFrames, frameDurationSeconds);
 }
 
 function drawAxis(
   context: CanvasRenderingContext2D,
+  gutter: number,
   width: number,
   height: number,
   firstFrame: number,
   visibleFrames: number,
   frameDurationSeconds: number,
 ): void {
-  const plotWidth = width - GUTTER;
-  const ticks = 6;
+  const plotWidth = width - gutter;
+  const ticks = plotWidth < 360 ? 3 : 6;
 
-  context.font = "11px var(--lk-font-mono, monospace)";
+  context.font = AXIS_FONT;
   context.textBaseline = "bottom";
-  context.fillStyle = "rgba(255, 255, 255, 0.28)";
+  context.fillStyle = AXIS_TEXT_COLOR;
 
   for (let tick = 0; tick <= ticks; tick++) {
-    const x = (plotWidth * tick) / ticks;
+    const x = gutter + (plotWidth * tick) / ticks;
     const seconds = (firstFrame + (visibleFrames * tick) / ticks) * frameDurationSeconds;
-    context.textAlign = tick === 0 ? "left" : "center";
+    context.textAlign = tick === 0 ? "left" : tick === ticks ? "right" : "center";
     context.fillText(formatTimestamp(seconds), x, height);
   }
-}
-
-function roundedRect(
-  context: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-): void {
-  context.beginPath();
-  context.roundRect(x, y, width, height, radius);
 }

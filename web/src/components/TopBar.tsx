@@ -42,7 +42,7 @@ export function TopBar({
     <header className="topbar">
       <div className="topbar__brand">
         <span className="topbar__mark">
-          <SparkIcon size={18} />
+          <SparkIcon size={20} />
         </span>
         <div>
           <h1>Nemotron 3 Diarization</h1>

@@ -1,33 +1,43 @@
+/* Fixed column counts, so the eight tiles always fill their rows evenly. */
 .speakers {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .speakers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .speaker {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  min-width: 0;
   padding: 10px 12px;
-  background: var(--lk-bg2);
-  border: 1px solid var(--lk-border);
-  border-radius: var(--lk-radius);
+  background: var(--surface);
+  border-radius: var(--radius-md);
   overflow: hidden;
   transition:
-    border-color 160ms ease,
     background 160ms ease,
-    box-shadow 160ms ease;
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.speaker:hover {
+  background: var(--surface-2);
 }
 
 .speaker[data-idle="true"] {
-  opacity: 0.4;
+  opacity: 0.45;
 }
 
 .speaker[data-active="true"] {
-  border-color: var(--tile-color);
-  background: var(--lk-bg3);
-  box-shadow: 0 0 0 1px var(--tile-color), 0 6px 24px -12px var(--tile-glow);
+  background: var(--surface-3);
+  box-shadow: var(--shadow-card), inset 0 0 0 1px var(--tile-color);
 }
 
 .speaker__avatar {
@@ -35,30 +45,30 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  font-size: 13px;
-  font-weight: 600;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--tile-color);
-  background: color-mix(in srgb, var(--tile-color) 16%, transparent);
-  border-radius: var(--lk-radius-pill);
+  background: color-mix(in srgb, var(--tile-color) 18%, var(--surface-2));
+  border-radius: 50%;
+}
+
+.speaker[data-active="true"] .speaker__avatar {
+  color: #000;
+  background: var(--tile-color);
 }
 
 .speaker__ring {
   position: absolute;
   inset: -4px;
   border: 2px solid var(--tile-color);
-  border-radius: var(--lk-radius-pill);
+  border-radius: 50%;
   opacity: 0;
   transform: scale(0.85);
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
 }
 
 .speaker[data-active="true"] .speaker__ring {
-  opacity: 0.8;
-  transform: scale(1);
   animation: speaker-pulse 1.6s ease-out infinite;
 }
 
@@ -69,21 +79,24 @@
 }
 
 .speaker__name {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .speaker__time {
-  font-family: var(--lk-font-mono);
-  font-size: 11px;
-  color: var(--lk-fg3);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .speaker__level {
   position: absolute;
   inset: auto 0 0 0;
-  height: 2px;
+  height: 3px;
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -99,12 +112,26 @@
     opacity: 0.8;
     transform: scale(1);
   }
-  70% {
-    opacity: 0;
-    transform: scale(1.25);
-  }
+  70%,
   100% {
     opacity: 0;
-    transform: scale(1.25);
+    transform: scale(1.3);
+  }
+}
+
+@media (max-width: 425px) {
+  .speaker {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .speaker__avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .speaker__name {
+    font-size: 13px;
   }
 }

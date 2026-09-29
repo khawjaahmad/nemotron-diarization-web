@@ -1,10 +1,10 @@
 .segments {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
-  background: var(--lk-bg2);
-  border: 1px solid var(--lk-border);
-  border-radius: var(--lk-radius-lg);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -12,85 +12,80 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--lk-border);
+  padding: 16px 16px 8px;
 }
 
 .segments__header h2 {
   margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--lk-fg3);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .segments__count {
-  font-family: var(--lk-font-mono);
-  font-size: 11px;
-  color: var(--lk-fg3);
-  background: var(--lk-bg3);
-  border-radius: var(--lk-radius-pill);
-  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
 }
 
 .segments__empty {
   margin: 0;
-  padding: 24px 16px;
-  color: var(--lk-fg4);
-  font-size: 13px;
+  padding: 8px 16px 24px;
+  color: var(--text-muted);
+  font-size: 14px;
 }
 
 .segments__list {
   flex: 1;
   margin: 0;
-  padding: 6px;
+  padding: 0 8px 8px;
   list-style: none;
   overflow-y: auto;
   scroll-behavior: smooth;
 }
 
 .segment {
-  position: relative;
   display: grid;
-  grid-template-columns: 3px 1fr auto;
+  grid-template-columns: 4px minmax(0, 1fr) auto;
   grid-template-areas:
     "rail speaker duration"
     "rail range   duration";
   align-items: center;
-  gap: 0 10px;
-  padding: 8px 10px;
-  border-radius: var(--lk-radius);
+  gap: 0 12px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .segment:hover {
-  background: var(--lk-bg3);
+  background: var(--surface-3);
 }
 
 .segment__rail {
   grid-area: rail;
   align-self: stretch;
   background: var(--segment-color);
-  border-radius: var(--lk-radius-pill);
+  border-radius: var(--radius-pill);
 }
 
 .segment__speaker {
   grid-area: speaker;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--segment-color);
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .segment__range {
   grid-area: range;
-  font-family: var(--lk-font-mono);
-  font-size: 11px;
-  color: var(--lk-fg3);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
 }
 
 .segment__duration {
   grid-area: duration;
-  font-family: var(--lk-font-mono);
-  font-size: 11px;
-  color: var(--lk-fg2);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
 }

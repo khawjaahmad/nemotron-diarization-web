@@ -1,43 +1,58 @@
+/* `--timeline-gutter` and `--timeline-axis` are read back by the canvas renderer. */
 .timeline {
+  --timeline-gutter: 88px;
+  --timeline-axis: 20px;
+  --timeline-pad: 16px;
+
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   flex: 1;
-  min-height: 0;
-  padding: 16px 16px 24px;
-  background: var(--lk-bg2);
-  border: 1px solid var(--lk-border);
-  border-radius: var(--lk-radius-lg);
+  /* Eight readable lanes plus the axis; below this "Speaker 8" would be squeezed out. */
+  min-height: 280px;
+  padding: var(--timeline-pad);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
 }
 
+/*
+ * Out of flow on purpose: the renderer resizes the canvas bitmap to match its box, and an in-flow
+ * canvas feeds that bitmap size back into the layout, so the panel grew on every redraw (fast on
+ * high-DPI screens) and pushed the lower lanes off-screen.
+ */
 .timeline__canvas {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: var(--timeline-pad);
+  width: calc(100% - 2 * var(--timeline-pad));
+  height: calc(100% - 2 * var(--timeline-pad));
 }
 
+/* Lane names sit in the gutter the canvas reserves on its left edge. */
 .timeline__labels {
   grid-area: 1 / 1;
   display: grid;
   gap: 6px;
-  justify-items: end;
+  width: var(--timeline-gutter);
+  padding-bottom: var(--timeline-axis);
   align-items: center;
-  padding-right: 10px;
+  justify-self: start;
   pointer-events: none;
 }
 
 .timeline__label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  opacity: 0.75;
-  grid-column: 1;
-  justify-self: end;
-  padding-right: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.timeline__labels {
-  margin-left: auto;
-  width: 84px;
-  justify-self: end;
+@media (max-width: 576px) {
+  .timeline {
+    --timeline-gutter: 32px;
+    --timeline-pad: 12px;
+    min-height: 240px;
+  }
+
+  .timeline__label-word {
+    display: none;
+  }
 }

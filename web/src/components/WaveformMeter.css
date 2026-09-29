@@ -1,11 +1,6 @@
 .meter {
+  display: block;
   width: 110px;
-  height: 26px;
+  height: 18px;
   flex-shrink: 0;
-}
-
-@media (max-width: 900px) {
-  .meter {
-    display: none;
-  }
 }

@@ -1,39 +1,35 @@
-/* Dark surface and control tokens in the spirit of the LiveKit components theme. */
+/*
+ * Near-black, achromatic surfaces with one functional green accent. Colour comes from the content:
+ * speaker hues are the only other palette (see lib/speakerStyle.ts).
+ */
 :root {
-  --lk-bg: #070707;
-  --lk-bg2: #111111;
-  --lk-bg3: #1c1c1c;
-  --lk-bg4: #282828;
-  --lk-bg5: #3a3a3a;
+  --bg: #121212;
+  --surface: #181818;
+  --surface-2: #1f1f1f;
+  --surface-3: #252525;
+  --surface-4: #2a2a2a;
 
-  --lk-fg: #ffffff;
-  --lk-fg2: #c7c7c7;
-  --lk-fg3: #8f8f8f;
-  --lk-fg4: #5f5f5f;
+  --text: #ffffff;
+  --text-muted: #b3b3b3;
+  --text-faint: #7c7c7c;
 
-  --lk-accent: #1f8cf9;
-  --lk-accent-soft: rgba(31, 140, 249, 0.16);
-  --lk-danger: #f91f31;
-  --lk-success: #1ff968;
+  --accent: #1ed760;
+  --accent-hover: #3be477;
+  --negative: #f3727f;
+  --warning: #ffa42b;
 
-  --lk-border: rgba(255, 255, 255, 0.08);
-  --lk-border-strong: rgba(255, 255, 255, 0.16);
+  --inset-border: rgb(18, 18, 18) 0 1px 0, rgb(124, 124, 124) 0 0 0 1px inset;
 
-  --lk-radius: 10px;
-  --lk-radius-lg: 16px;
-  --lk-radius-pill: 999px;
+  --shadow-card: rgba(0, 0, 0, 0.3) 0 8px 8px;
+  --shadow-heavy: rgba(0, 0, 0, 0.5) 0 8px 24px;
 
-  --lk-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --lk-font-mono: "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
 
-  --speaker-0: #1f8cf9;
-  --speaker-1: #1ff968;
-  --speaker-2: #c084fc;
-  --speaker-3: #fbbf24;
-  --speaker-4: #fb7185;
-  --speaker-5: #22d3ee;
-  --speaker-6: #a3e635;
-  --speaker-7: #f97316;
+  --font: "Helvetica Neue", helvetica, arial, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo,
+    sans-serif;
 }
 
 * {
@@ -48,12 +44,13 @@ body,
 
 body {
   margin: 0;
-  background: var(--lk-bg);
-  color: var(--lk-fg);
-  font-family: var(--lk-font);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button {
@@ -66,26 +63,38 @@ button {
 
 button:disabled {
   cursor: not-allowed;
-  opacity: 0.45;
+  opacity: 0.4;
 }
 
 select {
   font: inherit;
-  color: var(--lk-fg2);
-  background: var(--lk-bg3);
-  border: 1px solid var(--lk-border);
-  border-radius: var(--lk-radius);
-  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface-2)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='%23b3b3b3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E")
+    no-repeat right 14px center;
+  border: none;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--inset-border);
+  padding: 8px 34px 8px 16px;
   cursor: pointer;
   appearance: none;
+  min-width: 0;
+  max-width: 100%;
 }
 
-select:hover {
-  border-color: var(--lk-border-strong);
+select:hover:not(:disabled) {
+  background-color: var(--surface-3);
+}
+
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 :focus-visible {
-  outline: 2px solid var(--lk-accent);
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 
@@ -95,13 +104,22 @@ select:hover {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--lk-bg4);
+  background: var(--surface-4);
   border: 3px solid transparent;
-  border-radius: var(--lk-radius-pill);
+  border-radius: var(--radius-pill);
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--lk-bg5);
+  background: var(--text-faint);
   background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

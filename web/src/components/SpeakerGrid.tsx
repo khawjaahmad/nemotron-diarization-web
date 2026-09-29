@@ -1,5 +1,5 @@
 import { formatDuration } from "../lib/audio";
-import { speakerColor, speakerColorAlpha, speakerLabel } from "../lib/speakerStyle";
+import { speakerColor, speakerLabel } from "../lib/speakerStyle";
 import type { Segment } from "../lib/segments";
 import { speakingTimes } from "../lib/segments";
 import "./SpeakerGrid.css";
@@ -43,7 +43,6 @@ function SpeakerTile({ speaker, level, speakingSeconds, isActive, hasSpoken }: S
   const color = speakerColor(speaker);
   const style = {
     "--tile-color": color,
-    "--tile-glow": speakerColorAlpha(speaker, 0.35),
     "--tile-level": `${Math.round(Math.min(1, level) * 100)}%`,
   } as React.CSSProperties;
 
